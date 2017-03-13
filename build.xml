@@ -1,0 +1,38 @@
+<project name="sico" default="deploy" basedir=".." xmlns:sf="antlib:com.salesforce">
+    <property environment="env"/>
+    <import file="exec_anon.xml"/>
+
+    <taskdef resource="com/salesforce/antlib.xml" uri="antlib:com.salesforce">
+        <classpath>
+            <pathelement location="build/ant-salesforce.jar" />            
+        </classpath>
+    </taskdef>
+
+    <target name="runPreDeployScript">
+        <antcall target="ExecAnonScript">
+            <param name="what" value="deploy_script/pre.script" />
+        </antcall>
+    </target>
+
+    <target name="deploy">
+        <sf:deploy username="${sf.username}" 
+            password="${sf.password}" 
+            serverurl="${sf.serverUrl}" 
+            maxPoll="10000" 
+            pollWaitMillis="30000"
+            deployRoot="${basedir}/src"
+            testLevel="${sf.testLevel}"
+            checkOnly="${sf.checkOnly}" 
+            rollbackOnError="true"
+            allowMissingFiles="true"
+            ignoreWarnings="true"
+        />
+    </target>
+
+     <target name="runPostDeployScript">
+        <antcall target="ExecAnonScript">
+            <param name="what" value="deploy_script/post.script" />
+        </antcall>
+    </target>
+
+</project>
